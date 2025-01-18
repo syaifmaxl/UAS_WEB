@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} shopdetails-page {% endblock %}
+{% block content %}
+{% load humanize %}
+
+<!-- Breadcrumb Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <nav class="breadcrumb bg-light mb-30">
+                <a class="breadcrumb-item text-dark" href="{% url 'index' %}">Beranda</a>
+                <a class="breadcrumb-item text-dark" href="{% url 'shop' %}">Toko</a>
+                <span class="breadcrumb-item active">Detail Toko</span>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Shop Detail Start -->
+<div class="container-fluid pb-5">
+    <div class="row px-xl-5">
+        <!-- Product Image -->
+        <div class="col-lg-5 mb-30">
+            <img class="w-100 h-100" src="{{ product.product_img.url }}" alt="{{ product.product_name }}">
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-lg-7 h-auto mb-30">
+            <div class="h-100 bg-light p-30">
+                <h3>{{ product.product_name }}</h3>
+                <h3 class="font-weight-semi-bold mb-4">Rp{{ product.price|floatformat:3|intcomma }}</h3>
+                <p class="mb-4">{{ product.description }}</p>
+
+                <!-- Quantity and Add to Cart Button -->
+                <div class="d-flex align-items-center mb-4 pt-2">
+                    <form method="POST" action="{% url 'add_to_cart' product.id %}" class="d-flex align-items-center">
+                        {% csrf_token %}
+                        <div class="input-group quantity mr-3" style="width: 130px;">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-minus">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                            <input type="text" name="quantity" class="form-control bg-secondary border-0 text-center"
+                                value="1" id="quantity-input">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-plus">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary px-3">
+                            <i class="fa fa-shopping-cart mr-1"></i> Tambahkan ke Keranjang
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Social Share Buttons -->
+                <div class="d-flex pt-2">
+                    <strong class="text-dark mr-2">Bagikan ke:</strong>
+                    <div class="d-inline-flex">
+                        <a class="text-dark px-2" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="text-dark px-2" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="text-dark px-2" href=""><i class="fab fa-linkedin-in"></i></a>
+                        <a class="text-dark px-2" href=""><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Shop Detail End -->
+
+{% comment %} <!-- Products Start -->
+<div class="container-fluid py-5">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Mungkin kamu
+            sukai</span></h2>
+    <div class="row px-xl-5">
+        <div class="col">
+            <div class="owl-carousel related-carousel">
+                {% for product in shopproduct %}
+                <div class="product-item bg-light">
+                    <div class="product-img position-relative overflow-hidden">
+                        <img class="img-fluid w-100" src="{{ product.product_img.url }}"
+                            alt="{{ product.product_name }}">
+                        <div class="product-action">
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center py-4">
+                        <a class="h6 text-decoration-none text-truncate" href="">{{ product.product_name }}</a>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <h5>Rp{{ product.price|floatformat:3|intcomma }}</h5>
+                            {% if product.original_price %}
+                            <h6 class="text-muted ml-2"><del>${{ product.original_price }}</del></h6>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center mb-1">
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small>(99)</small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Products End --> {% endcomment %}
+
+{% endblock %}

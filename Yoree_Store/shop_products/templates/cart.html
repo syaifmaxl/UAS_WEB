@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb Start -->
+<div class="container-fluid">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <nav class="breadcrumb bg-light mb-30">
+                <a class="breadcrumb-item text-dark" href="{% url 'index' %}">Beranda</a>
+                <a class="breadcrumb-item text-dark" href="{% url 'shop' %}">Toko</a>
+                <span class="breadcrumb-item active">Keranjang</span>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Cart Start -->
+{% if messages %}
+<div>
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+<div class="container py-5">
+    <h2 class="mb-4">Keranjang</h2>
+
+    {% if cart_items %}
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Produk</th>
+                <th>Harga</th>
+                <th>Jumlah</th>
+                <th>Total</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product_id, item in cart_items.items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>Rp{{ item.price|intcomma }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>Rp{{ item.total_price|floatformat:3|intcomma }}</td>
+                <td>
+                    <form method="POST" action="{% url 'remove_from_cart' product_id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-right">
+        <h4>Total Price: Rp{{ total_price|floatformat:3|intcomma }}</h4>
+        <a href="{% url 'checkout' %}" class="btn btn-success">Proses untuk Checkout</a>
+    </div>
+    {% else %}
+    <p>Keranjang Kamu Kosong. <a href="{% url 'shop' %}">Lanjut Belanja</a>.</p>
+    {% endif %}
+</div>
+<!-- Cart End -->
+
+{% endblock %}
